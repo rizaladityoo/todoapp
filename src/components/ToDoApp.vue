@@ -15,21 +15,42 @@
       </div>
       
       <ul class="list-group">
-        <li v-for="(task, index) in tasks" :key="index" class="list-group-item d-flex justify-content-between align-items-center" @click="changeStatus(index)">
-          <span :class="{'text-decoration-line-through':task.status=='Completed'}">{{ task.name }}</span>
+        <li v-for="(task, index) in tasks" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+          <span :class="{'text-decoration-line-through':task.status=='Completed'}"  @click="changeStatus(index)">{{ task.name }}</span>
           <div>
             <span :class="{
               'text-warning':task.status=='Started',
               'text-success':task.status=='Completed'
               }">{{ task.status }}</span>
-            <button class="btn btn-primary me-2" @click="showModal = true">Edit</button>
+            <button class="btn btn-primary me-2" @click="showModal(index)">Edit</button>
             <button class="btn btn-danger" @click="deleteTask(index)">Delete</button>
           </div>
         </li>
         <!-- Add more tasks here -->
       </ul>
   </div>
-  
+  <div class="modal fade" ref="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Task</h5>
+            <button type="button" class="btn-close" @click="hideModal"></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="text"
+              class="form-control"
+              v-model="edit_modal"
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="hideModal">Close</button>
+            <button type="button" class="btn btn-primary" @click="editModal">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   
 </template>
 
@@ -52,7 +73,9 @@ export default {
           status: 'Completed'
         },
       ],
-      task:""
+      task:"",
+      edit_modal:"",
+      index_edit_model:null,
     }
   },
   methods:{
@@ -72,10 +95,24 @@ export default {
     },
     deleteTask(index){
       this.tasks.splice(index,1)
+    },
+    showModal(index) {
+      this.$refs.myModal.classList.add("show");
+      this.$refs.myModal.style.display = "block";
+      this.edit_modal = this.tasks[index].name
+      this.index_edit_model = index
+    },
+    hideModal() {
+      this.$refs.myModal.classList.remove("show");
+      this.$refs.myModal.style.display = "none";
+    },
+    editModal() {
+      this.tasks[this.index_edit_model].name = this.edit_modal
+      this.edit_modal = ""
+      this.index_edit_model = null
+      this.$refs.myModal.classList.remove("show");
+      this.$refs.myModal.style.display = "none";
     }
-  },
-  mounted(){
-    this.changeStatus()
   }
 }
 </script>
