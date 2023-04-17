@@ -1,5 +1,7 @@
 # todoapp
 
+### Untuk fitur done/complite click pada tulisannya
+
 ## Project setup
 ```
 npm install
